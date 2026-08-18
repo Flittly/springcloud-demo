@@ -2,6 +2,7 @@ package com.flittly.controller;
 
 import com.flittly.bean.Product;
 import com.flittly.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,10 @@ public class ProductController {
 
     // 查询商品
     @GetMapping("/product/{id}")
-    public Product getProduct(@PathVariable("id") Long productId) {
-        System.out.println("查询商品：" + productId);
+    public Product getProduct(@PathVariable("id") Long productId, HttpServletRequest request) {
+
+        String header = request.getHeader("X-Token");
+        System.out.println("查询商品：" + productId + "hello ... token" + header);
         Product product = productService.getProductById(productId);
         return product;
     }

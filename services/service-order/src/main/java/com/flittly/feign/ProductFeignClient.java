@@ -1,12 +1,13 @@
 package com.flittly.feign;
 
 import com.flittly.bean.Product;
+import com.flittly.feign.fallback.ProductFeignClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(value = "service-product") // feign客户端
+@FeignClient(value = "service-product", fallback = ProductFeignClientFallback.class) // feign客户端
 public interface ProductFeignClient {
     // mvc注解的两套使用逻辑
     // 1、标注在Controller上，是接受这样的请求。
