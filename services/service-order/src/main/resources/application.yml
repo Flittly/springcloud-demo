@@ -3,6 +3,7 @@ server:
 spring:
   profiles:
     active: dev
+    include: feign
   application:
     name: service-order
   cloud:
@@ -11,6 +12,10 @@ spring:
       config:
         import-check: false
         namespace: ${spring.profiles.active:public}
+
+logging:
+  level:
+    com.flittly.order.feign: DEBUG
 
 ---
 spring:
