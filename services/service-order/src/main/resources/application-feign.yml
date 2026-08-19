@@ -11,8 +11,14 @@ spring:
             logger-level: full
             connect-timeout: 3000
             read-timeout: 5000
-            request-interceptors:
-              - com.flittly.interceptor.XTokenRequestInterceptor
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      eager: true
+#            request-interceptors:
+#              - com.flittly.interceptor.XTokenRequestInterceptor
+
+
 
 feign:
   sentinel:

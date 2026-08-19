@@ -1,5 +1,8 @@
 package com.flittly.service.impl;
 
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.flittly.bean.Order;
 import com.flittly.bean.Product;
 import com.flittly.feign.ProductFeignClient;
@@ -31,20 +34,42 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     ProductFeignClient productFeignClient;
 
+    @SentinelResource(value = "createOrder", blockHandler = "createOrderFallback")
     @Override
     public Order createOrder(Long productId, Long userId) {
         // Product product = getProductFromRemoteWithAnnotation(productId);
         Product product = productFeignClient.getProductById(productId);
         Order order = new Order();
 
-        order.setId(1L);
-        // 总金额
         order.setTotalAmount(product.getPrice().multiply(new BigDecimal(product.getNum())));
         order.setUserId(userId);
         order.setNickName("testName");
         order.setAddress("testAddress");
         order.setProductList(Arrays.asList(product));
 
+//        try{
+//            SphU.entry("hahah");
+//        }
+//        catch(BlockException e)
+//        {
+//            // 编码处理，抛出异常
+//            throw new RuntimeException("创建订单失败");
+//        }
+
+
+        return order;
+    }
+
+    // 兜底回调
+    public Order createOrderFallback(Long productId, Long userId, BlockException e){
+        Product product = new Product();
+        Order order = new Order();
+        order.setId(1L);
+        order.setTotalAmount(new BigDecimal(0));
+        order.setUserId(userId);
+        order.setNickName("");
+        order.setAddress("未知用户");
+        order.setProductList(Arrays.asList(product));
         return order;
     }
 
