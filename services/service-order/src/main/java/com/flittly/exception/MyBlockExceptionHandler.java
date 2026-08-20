@@ -18,8 +18,8 @@ public class MyBlockExceptionHandler implements BlockExceptionHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, String resourceName,BlockException e) throws Exception {
         // 自定义的限流处理逻辑
         response.setContentType("application/json;charset=utf-8");
+        response.setStatus(429);
         PrintWriter writer = response.getWriter();
-
 
         R error = R.error(500, resourceName + "被sentinel限制了，原因：" + e.getClass());
 

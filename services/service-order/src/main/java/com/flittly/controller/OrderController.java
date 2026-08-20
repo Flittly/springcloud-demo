@@ -3,6 +3,7 @@ package com.flittly.controller;
 import com.flittly.bean.Order;
 import com.flittly.properties.OrderProperties;
 import com.flittly.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RefreshScope
 @RestController
 public class OrderController {
@@ -37,5 +39,25 @@ public class OrderController {
                             @RequestParam("productId") Long productId){
         Order order = orderService.createOrder(productId, userId);
         return order;
+    }
+
+    @GetMapping("/seckill")
+    public Order seckillOrder(@RequestParam("userId") Long userId,
+                            @RequestParam("productId") Long productId){
+        Order order = orderService.createOrder(productId, userId);
+        order.setId(Long.MAX_VALUE);
+        return order;
+    }
+
+    @GetMapping("/writeDb")
+    public String writeDb(){
+        log.info("write db");
+        return "write db";
+    }
+
+    @GetMapping("/readDb")
+    public String readDb(){
+        log.info("read db");
+        return "read db";
     }
 }

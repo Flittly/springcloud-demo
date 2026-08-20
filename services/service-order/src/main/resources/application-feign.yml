@@ -15,6 +15,7 @@ spring:
       transport:
         dashboard: localhost:8080
       eager: true
+      web-context-unify: false
 #            request-interceptors:
 #              - com.flittly.interceptor.XTokenRequestInterceptor
 
