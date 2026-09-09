@@ -1,5 +1,7 @@
 package com.flittly.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.flittly.bean.Order;
 import com.flittly.properties.OrderProperties;
 import com.flittly.service.OrderService;
@@ -8,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequestMapping("/api/order")
 @Slf4j
-@RefreshScope
+//@RefreshScope
 @RestController
 public class OrderController {
 
@@ -42,10 +46,20 @@ public class OrderController {
     }
 
     @GetMapping("/seckill")
+    @SentinelResource(value = "seckill-order", fallback = "seckillFallback")
     public Order seckillOrder(@RequestParam("userId") Long userId,
                             @RequestParam("productId") Long productId){
         Order order = orderService.createOrder(productId, userId);
         order.setId(Long.MAX_VALUE);
+        return order;
+    }
+
+    public Order seckillFallback(Long userId, Long productId, BlockException exception){
+        System.out.println("seckillFallback....");
+        Order order = new Order();
+        order.setId(productId);
+        order.setUserId(userId);
+        order.setAddress("异常信息：" + exception.getClass());
         return order;
     }
 
