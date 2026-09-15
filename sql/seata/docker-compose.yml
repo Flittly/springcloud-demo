@@ -1,0 +1,30 @@
+# Seata Server 2.1.0（Docker 方式）
+#
+# 用法（在 sql/seata 目录下执行）：
+#   docker compose up -d
+#   docker logs -f seata-server
+#
+# 说明：
+#   * MySQL 和 Nacos 跑在宿主机上，容器里用 host.docker.internal 访问宿主机
+#   * 如果你的 Docker 不支持 host.docker.internal，把下面 application.yml 里的
+#     host.docker.internal 换成宿主机的局域网 IP
+#   * 8091 是客户端通信端口，7091 是控制台端口（浏览器访问 http://127.0.0.1:7091）
+#
+# 另外，用 db 模式需要在 MySQL 里先执行 04-seata-server-db.sql 建好 seata 库。
+
+services:
+  seata-server:
+    image: apache/seata-server:2.1.0
+    container_name: seata-server
+    ports:
+      - "8091:8091"
+      - "7091:7091"
+    environment:
+      # 注册到 Nacos 的地址。容器默认会用容器内网 IP（如 172.x），
+      # 宿主机上的 Java 服务根本连不上，所以这里强制指定成宿主机的 127.0.0.1，
+      # 客户端再通过下面映射出去的 8091 端口访问。
+      JAVA_OPT: "-Dseata.ip=127.0.0.1"
+    volumes:
+      - ./server/application.yml:/seata-server/resources/application.yml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

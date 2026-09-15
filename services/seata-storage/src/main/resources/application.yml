@@ -1,0 +1,50 @@
+server:
+  port: 9103
+  error:
+    include-message: always
+    include-exception: true
+
+spring:
+  application:
+    name: seata-storage
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        # 本服务只用 Nacos 做服务发现，不用它的配置中心。
+        # 但父 POM（services）里带了 nacos-config，不关掉这个检查启动会报
+        # "No spring.config.import property has been defined"
+        import-check:
+          enabled: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/seata_storage?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# ============================ Seata 客户端配置 ============================
+seata:
+  enabled: true
+  application-id: seata-storage
+  tx-service-group: default_tx_group
+  service:
+    vgroup-mapping:
+      default_tx_group: default
+    # registry.type=file 时，客户端直接按这里的地址连 TC（Seata Server）
+    grouplist:
+      default: 127.0.0.1:8091
+  registry:
+    # 用 file 而不是 nacos：Seata Server 跑在 Docker 里时，它注册到 Nacos 的是容器内网 IP
+    # （172.x.x.x），宿主机上的 Java 服务连不上，所以这里直连映射出来的 8091 端口。
+    type: file
+  enable-auto-data-source-proxy: true
+
+logging:
+  level:
+    com.flittly: info
+    io.seata: info

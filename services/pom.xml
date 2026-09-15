@@ -12,6 +12,11 @@
     <modules>
         <module>service-product</module>
         <module>service-order</module>
+        <!-- Seata 分布式事务示例：business 是 TM（全局事务发起方），另外三个是 RM -->
+        <module>seata-business</module>
+        <module>seata-order</module>
+        <module>seata-storage</module>
+        <module>seata-account</module>
     </modules>
 
     <artifactId>services</artifactId>
@@ -20,6 +25,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- mybatis-spring-boot-starter 3.0.x 适配 Spring Boot 3.x -->
+        <mybatis-spring-boot.version>3.0.5</mybatis-spring-boot.version>
     </properties>
 
     <dependencies>
