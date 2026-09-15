@@ -1,15 +1,38 @@
 spring:
   cloud:
     gateway:
+      default-filters:
+        - AddResponseHeader=X-Request-Foo, 123123
       routes:
+        - id: bing-route
+          uri: https://bing.com
+          predicates:
+            - name: Path
+              args:
+                patterns: /search
+            - name: Query
+              args:
+                param: q
+                value: haha
+            - name: Vip
+              args:
+                param: user
+                value: flittly
         - id: order-route
           uri: lb://service-order
           predicates:
-            name: Path
-            args:
-              pattern: /api/order/**
-              matchTrailingSlash: true
+            - name: Path
+              args:
+                patterns: /api/order/**
+                matchTrailingSlash: true
+          filters:
+            - RewritePath=/api/order/?(?<segment>.*), /$\{segment}
+            - OnceToken=X-Response-Token, uuid
+          order: 1
         - id: product-route
           uri: lb://service-product
           predicates:
             - Path=/api/product/**
+          filters:
+            - RewritePath=/api/product/?(?<segment>.*), /$\{segment}
+

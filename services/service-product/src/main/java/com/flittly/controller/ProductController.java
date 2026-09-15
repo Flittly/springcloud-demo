@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
-@RequestMapping("/api/product")
+//@RequestMapping("/api/order")
 @RestController
 public class ProductController {
 
